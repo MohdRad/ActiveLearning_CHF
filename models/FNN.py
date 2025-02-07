@@ -13,7 +13,7 @@ def get_dynamic_batch_size(train_size, min_size=4, max_size=64, factor=4):
     return max(min_size, min(max_size, train_size // factor))
     
 # Data Preparation
-data = pd.read_csv("/home/unabila/activeLearning/chfAll.csv", header="infer")
+data = pd.read_csv("../data/chfAll.csv", header="infer")
 
 X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values.reshape(-1, 1)  # Ensure Y is a column vector
