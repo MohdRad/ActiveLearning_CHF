@@ -324,13 +324,13 @@ def evaluate_model(y_true, y_pred):
 #################################
 
 # Data Preparation
-data = pd.read_csv("/home/nabiumme/activeLearning/chfAll.csv", header="infer")
+data = pd.read_csv("../data/chfAll.csv", header="infer")
 
 X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values.reshape(-1, 1)  # Ensure Y is a column vector
 
 # Experiment parameters
-num_experiments = 10 #########
+num_experiments = 100 #########
 num_iterations = 300
 
 
@@ -519,7 +519,7 @@ r2_df = pd.DataFrame({
         "Mean R2 Random Sampling": r2_mean_random,
         "Std R2 Random Sampling": r2_std_random
     })
-r2_df.to_csv("VI400_r2_scores_per_iteration.csv", index=False)
+r2_df.to_csv("VI_r2_scores_per_iteration.csv", index=False)
     
     
 # Plot R2 scores with standard deviation
@@ -535,4 +535,4 @@ plt.xlabel('Iteration')
 plt.ylabel('Mean R2 Score')
 plt.legend()
 plt.grid(True)
-plt.savefig("VI400_active_learning_vs_random_r2_mean_std.png")
+plt.savefig("VI_active_learning_vs_random_r2_mean_std.png")
