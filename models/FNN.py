@@ -19,7 +19,7 @@ X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values.reshape(-1, 1)  # Ensure Y is a column vector
 
 # Experiment parameters
-num_experiments = 50 #########
+num_experiments = 100 #########
 num_iterations = 300
 initial_train_size = 10
 sampling_size = 1
@@ -232,4 +232,4 @@ plt.xlabel('Iteration')
 plt.ylabel('Mean R2 Score')
 plt.legend()
 plt.grid(True)
-plt.savefig("repeat_hMAPE_active_learning_vs_random_r2_mean_std.png")
+plt.savefig("FNN_active_learning_vs_random_r2_mean_std.png")
