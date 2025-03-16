@@ -21,10 +21,10 @@ X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values.reshape(-1, 1)  
 
 # Experiment parameters
-num_experiments = 100
-num_iterations = 300
-initial_train_size = 10
-sampling_size = 1
+num_experiments = 5
+num_iterations = 500
+initial_train_size = 100
+sampling_size = 20
 
 # Function to run a single experiment in parallel
 def run_experiment(exp):
@@ -157,7 +157,7 @@ if __name__ == '__main__':
         "Mean R2 Random Sampling": r2_mean_random,
         "Std R2 Random Sampling": r2_std_random
     })
-    r2_df.to_csv("RF_r2_scores_per_iteration.csv", index=False)
+    r2_df.to_csv("../results/RF_r2_scores_per_iteration.csv", index=False)
 
     # Plot R2 scores with standard deviation
     plt.figure(figsize=(10, 6))
@@ -167,10 +167,9 @@ if __name__ == '__main__':
     plt.plot(range(1, num_iterations + 1), r2_mean_random, marker='s', linestyle='--', label='Random Sampling', color='red')
     plt.fill_between(range(1, num_iterations + 1), r2_mean_random - r2_std_random, r2_mean_random + r2_std_random, color='red', alpha=0.2)
 
-    plt.title('RF Active Learning vs Random Sampling')
+    #plt.title('RF Active Learning vs Random Sampling')
     plt.xlabel('Iteration')
     plt.ylabel('Mean R2 Score')
     plt.legend()
     plt.grid(True)
-    plt.savefig("RF_active_learning_vs_random_r2_mean_std.png")
-
+    plt.savefig("../results/RF_active_learning_vs_random_r2_mean_std.png")
