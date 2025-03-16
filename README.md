@@ -20,7 +20,7 @@ conda activate torchgpu
 pip install torch torchvision torchaudio
 # 4. Install other relevant packages
 pip install pandas matplotlib scikit-learn seaborn
-```bash
+```
 
 ## 📊 How to generate the results
 
