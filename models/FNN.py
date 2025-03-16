@@ -8,6 +8,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 
+import time
+start = time.time()
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
+
 def get_dynamic_batch_size(train_size, min_size=4, max_size=64, factor=4):
     """Calculate batch size based on current training dataset size."""
     return max(min_size, min(max_size, train_size // factor))
@@ -19,10 +26,10 @@ X = data.iloc[:, :-1].values
 Y = data.iloc[:, -1].values.reshape(-1, 1)  # Ensure Y is a column vector
 
 # Experiment parameters
-num_experiments = 100 #########
+num_experiments = 20 ######### 20
 num_iterations = 300
-initial_train_size = 10
-sampling_size = 1
+initial_train_size = 100
+sampling_size = 20
 
 r2_scores_active_all = np.zeros((num_experiments, num_iterations))
 r2_scores_random_all = np.zeros((num_experiments, num_iterations))
@@ -41,11 +48,12 @@ for exp in range(num_experiments):
     X_test = Xscaler.transform(X_test)
     y_test = Yscaler.transform(y_test)
     
-    # Convert to PyTorch tensors
-    X_train = torch.tensor(X_train, dtype=torch.float32)
-    X_test = torch.tensor(X_test, dtype=torch.float32)
-    y_train = torch.tensor(y_train, dtype=torch.float32)
-    y_test = torch.tensor(y_test, dtype=torch.float32)
+    # Convert to PyTorch tensors  
+    X_train = torch.tensor(X_train, dtype=torch.float32, device=device)
+    X_test = torch.tensor(X_test, dtype=torch.float32, device=device)
+    y_train = torch.tensor(y_train, dtype=torch.float32, device=device)
+    y_test = torch.tensor(y_test, dtype=torch.float32, device=device)
+
     
     # Define the Feedforward Neural Network class
     class FNN(nn.Module):
@@ -75,8 +83,9 @@ for exp in range(num_experiments):
     num_epochs = 300
     
     # Separate models for Active Learning and Random Sampling
-    model_active = FNN(input_dim, hidden_dim, output_dim)
-    model_random = FNN(input_dim, hidden_dim, output_dim)
+    model_active = FNN(input_dim, hidden_dim, output_dim).to(device)
+    model_random = FNN(input_dim, hidden_dim, output_dim).to(device)
+
     
     # Define the loss function and optimizer
     criterion = nn.MSELoss()
@@ -100,10 +109,12 @@ for exp in range(num_experiments):
     
     # Function to train the model
     def train_model(model, train_loader, criterion, optimizer, num_epochs):
+        model.to(device)  # Ensure model is on GPU
         for epoch in range(num_epochs):
             model.train()
             running_loss = 0.0
             for inputs, targets in train_loader:
+                inputs, targets = inputs.to(device), targets.to(device)  # Move batch to GPU
                 outputs = model(inputs)
                 loss = criterion(outputs, targets)
                 optimizer.zero_grad()
@@ -112,17 +123,19 @@ for exp in range(num_experiments):
                 running_loss += loss.item() * inputs.size(0)
             epoch_loss = running_loss / len(train_loader.dataset)
             print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {epoch_loss:.4f}")
+
     
     # Function to calculate MAPE
     def calculate_mape(model, X, y, Yscaler):
         model.eval()
         with torch.no_grad():
+            X, y = X.to(device), y.to(device)  # Move to GPU
             predictions = model(X)
-            predictions_np = Yscaler.inverse_transform(predictions.numpy())
-            y_np = Yscaler.inverse_transform(y.numpy())
+            predictions_np = Yscaler.inverse_transform(predictions.cpu().numpy())  # Move back to CPU before numpy ops
+            y_np = Yscaler.inverse_transform(y.cpu().numpy())
             mape = mean_absolute_percentage_error(y_np, predictions_np)
         return mape, predictions_np, y_np
-    
+
     # Random Sampling Loop
     r2_scores_random = []
     #batch_size = get_dynamic_batch_size(len(X_initial_active))
@@ -191,9 +204,9 @@ for exp in range(num_experiments):
         ]
     
         # Select the sample with the **highest MAPE**
-        top_index = subset_indices[np.argmax(mape_values)]
-        X_new = X_pool_active[top_index].unsqueeze(0)
-        y_new = y_pool_active[top_index].unsqueeze(0)
+        top_index = subset_indices[np.argsort(mape_values)[-sampling_size:]]
+        X_new = X_pool_active[top_index]
+        y_new = y_pool_active[top_index]
     
         # Update training data
         X_initial_active = torch.cat((X_initial_active, X_new), dim=0)
@@ -219,6 +232,17 @@ r2_std_active = np.std(r2_scores_active_all, axis=0)
 r2_mean_random = np.mean(r2_scores_random_all, axis=0)
 r2_std_random = np.std(r2_scores_random_all, axis=0)
 
+    # Save R2 scores and standard deviation per iteration
+r2_df = pd.DataFrame({
+        "Iteration": range(1, num_iterations + 1),
+        "Mean R2 Active Learning": r2_mean_active,
+        "Std R2 Active Learning": r2_std_active,
+        "Mean R2 Random Sampling": r2_mean_random,
+        "Std R2 Random Sampling": r2_std_random
+    })
+r2_df.to_csv("../results/fnn100_20_Error_r2_scores_per_iteration.csv", index=False)
+    
+    
 # Plot R2 scores with standard deviation
 plt.figure(figsize=(10, 6))
 plt.plot(range(1, num_iterations + 1), r2_mean_active, marker='o', linestyle='-', label='Active Learning', color='blue')
@@ -232,4 +256,8 @@ plt.xlabel('Iteration')
 plt.ylabel('Mean R2 Score')
 plt.legend()
 plt.grid(True)
-plt.savefig("../results/FNN_active_learning_vs_random_r2_mean_std.png")
+plt.savefig("../results/fnn100_20_active_learning_vs_random_r2_mean_std.png")
+
+
+end = time.time()
+print(f"Time taken: {end - start:.2f} sec")
