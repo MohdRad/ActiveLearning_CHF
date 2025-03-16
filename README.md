@@ -21,3 +21,13 @@ pip install torch torchvision torchaudio
 # 4. Install other relevant packages
 pip install pandas matplotlib scikit-learn seaborn
 
+## 📊 How to generate the results
+
+- The folder `data` contains input data files used by the model scripts to generate results.
+
+- **Step 1:** Go to the folder `models` and run the desired script (e.g., `viAL.py`) to start the training or evaluation process.
+```bash
+python viAL.py
+
+Results will be saved automatically in the `results` folder.
+
