@@ -1,8 +1,16 @@
-Aided Active Learning for Enhanced Critical Heat Flux Prediction
+# Aided Active Learning for Enhanced Critical Heat Flux Prediction
 
-NURETH-21: Aided Active Learning for Enhanced Critical Heat Flux Prediction
+**NURETH-21: Aided Active Learning for Enhanced Critical Heat Flux Prediction**
 
-Nabila, U.M., Radaideh, M.I., Burnett, L.A., Lin, L., Radaideh, M.I. (2025). “Aided Active Learning for Enhanced Critical Heat Flux Prediction,” In: 21st International Topical Meeting on Nuclear Reactor Thermal Hydraulics (NURETH-21), Busan, Korea, August 31 – September 5, 2025.
+---
+
+## 📄 Paper
+
+Nabila, U.M., Radaideh, M.I., Burnett, L.A., Lin, L., Radaideh, M.I. (2025).  
+“Aided Active Learning for Enhanced Critical Heat Flux Prediction,”  
+In: *21st International Topical Meeting on Nuclear Reactor Thermal Hydraulics (NURETH-21)*,  
+Busan, Korea, August 31 – September 5, 2025.
+
  
 This repository contains the implementation of Active Learning (AL) with Variational Inference (VI) in Feedforward Neural Networks (vFNN) for Critical Heat Flux (CHF) prediction. 
 We evaluate the performance of:
