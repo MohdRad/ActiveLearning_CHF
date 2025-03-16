@@ -29,6 +29,7 @@ pip install pandas matplotlib scikit-learn seaborn
 -  Go to the folder `models` and run the desired script (e.g., `viAL.py`) to start the training or evaluation process.
 ```bash
 python viAL.py
+```
 
 Results will be saved automatically in the `results` folder.
 
