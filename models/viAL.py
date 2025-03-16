@@ -317,7 +317,7 @@ def run_experiment(exp_id):
     print(f"Starting Experiment {exp_id}")
     
     # Data Preparation
-    data = pd.read_csv("/home/unabila/rfAL/chfAll.csv", header="infer")
+    data = pd.read_csv("../data/chfAll.csv", header="infer")
 
     X = data.iloc[:, :-1].values
     Y = data.iloc[:, -1].values.reshape(-1, 1)  # Ensure Y is a column vector
@@ -584,4 +584,4 @@ if __name__ == "__main__":
     plt.grid(True)
 
     # Show and save the plot
-    plt.savefig("VI_last_50_10_20s_500it_500e_comparison_plot.png")
+    plt.savefig("../results/VI_last_50_10_20s_500it_500e_comparison_plot.png")
