@@ -16,11 +16,9 @@ To set up the environment for this project, follow these steps:
 conda create -n torchgpu python=3.11
 # 2. Activate the environment
 conda activate torchgpu
-# 3. Install PyTorch and related libraries
-pip install torch torchvision torchaudio
-# 4. Install other relevant packages
-pip install pandas matplotlib scikit-learn seaborn
-```
+# 3. Install required libraries
+pip install -r requirements.txt
+
 
 ## 📊 How to generate the results
 
