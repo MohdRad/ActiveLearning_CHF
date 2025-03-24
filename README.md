@@ -18,9 +18,15 @@ conda create -n torchgpu python=3.11
 conda activate torchgpu
 # 3. Install required libraries
 pip install -r requirements.txt
+```
+Check whether Nvidia-cuda was installed using 
+```bash
+import torch
+print(torch.cuda.is_available())
+```
+If this prints ```False```, you can download torch+cuda from [Pytorch](https://pytorch.org/get-started/locally/) website.
 
-
-## 📊 How to generate the results
+## 📊 How to Generate the Results
 
 - The folder `data` contains input data files used by the model scripts to generate results.
 
